@@ -23,7 +23,7 @@ for more details.
 
 Broadly, there are three categories of instructions that fit into the Relaxed SIMD proposal:
 
-1. Integer instructions where the the inputs are interpreted differently (e.g.
+1. Integer instructions where the inputs are interpreted differently (e.g.
    swizzle,  4-D dot-product)
 2. Floating-point instructions whose behavior for out-of-range and NaNs differ
    (e.g. float-to-int conversions, float min/max)
