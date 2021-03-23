@@ -27,8 +27,8 @@ Broadly, there are three categories of instructions that fit into the Relaxed SI
    swizzle,  4-D dot-product)
 2. Floating-point instructions whose behavior for out-of-range and NaNs differ
    (e.g. float-to-int conversions, float min/max)
-3. Floating-point instructions where the precision differ (e.g. FMA, reciprocal
-   instructions)
+3. Floating-point instructions where the precision or order of operations
+   differ (e.g. FMA, reciprocal instructions, sum reduction)
 
 Example of some instructions we would like to add:
 
