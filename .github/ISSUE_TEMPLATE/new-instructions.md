@@ -1,0 +1,18 @@
+---
+name: New instructions
+about: Suggest new instructions for Relaxed SIMD
+title: ''
+labels: instruction-proposal
+assignees: ''
+
+---
+
+1. What are the instructions being proposed?
+
+2. What are the semantics of these instructions?
+
+3. How will these instructions be implemented? Give examples for at least x86-64 and ARM64.
+
+4. How does behavior differ across processors? What new fingerprinting surfaces will be exposed?
+
+5. What use cases are there?
