@@ -55,9 +55,9 @@ Example of some instructions we would like to add:
 
 2. What are the semantics of these instructions?
 
-3. How will these instructions be implemented? Give examples on at 2 different architectures.
+3. How will these instructions be implemented? Give examples for at least x86-64 and ARM64.
 
-4. How does behavior differ across architectures? What new fingerprinting surfaces will be exposed?
+4. How does behavior differ across processors? What new fingerprinting surfaces will be exposed?
 ```
 
 An example FMA proposal based on https://github.com/WebAssembly/simd/pull/79:
@@ -78,7 +78,7 @@ An example FMA proposal based on https://github.com/WebAssembly/simd/pull/79:
     f64x2.qfms(x, y, z) = for each 64-bit lane: x[i] - y[i] * z[i] (single rounding)
     ```
 
-    > 3. How will these instructions be implemented? Give examples on at 2 different architectures.
+    > 3. How will these instructions be implemented? Give examples for at least x86-64 and ARM64.
 
     ia32 or x64 with FMA3:
 
@@ -107,7 +107,7 @@ An example FMA proposal based on https://github.com/WebAssembly/simd/pull/79:
     // examples
     ```
 
-    > 4. How does behavior differ across hardware? What new fingerprinting surfaces will be exposed?
+    > 4. How does behavior differ across processors? What new fingerprinting surfaces will be exposed?
 
     On hardware without FMA support, it will be calculated with two roundings. This will allow us to differentiate between
     - processor generations on Intel (newer generations come with FMA support).
