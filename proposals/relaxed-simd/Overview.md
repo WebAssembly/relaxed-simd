@@ -58,6 +58,8 @@ Example of some instructions we would like to add:
 3. How will these instructions be implemented? Give examples for at least x86-64 and ARM64.
 
 4. How does behavior differ across processors? What new fingerprinting surfaces will be exposed?
+
+5. What use cases are there?
 ```
 
 An example FMA proposal based on https://github.com/WebAssembly/simd/pull/79:
@@ -112,3 +114,8 @@ An example FMA proposal based on https://github.com/WebAssembly/simd/pull/79:
     On hardware without FMA support, it will be calculated with two roundings. This will allow us to differentiate between
     - processor generations on Intel (newer generations come with FMA support).
     - some older 32-bit ARM (Cortex-A8, Cortex-A9, Qualcomm Scorpion).
+
+    > 5. What use cases are there?
+
+    - Neural networks, e.g. [MobileNets](https://arxiv.org/abs/1704.04861)
+    - and more...
