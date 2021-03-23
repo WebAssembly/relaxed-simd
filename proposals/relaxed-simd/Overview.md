@@ -45,7 +45,7 @@ Example of some instructions we would like to add:
   notes](https://github.com/WebAssembly/meetings/blob/master/main/2021/CG-03-16.md)
 - [SIMD proposal](https://github.com/WebAssembly/simd)
 
-## How to suggest a instructions
+## How to suggest instructions
 
 1. [File an issue](https://github.com/WebAssembly/relaxed-simd/issues/new)
 2. In the body of the issue, copy the template below and answer the questions (an example of FMA has been given below):
