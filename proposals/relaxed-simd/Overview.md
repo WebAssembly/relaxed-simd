@@ -103,10 +103,9 @@ In the above example, the same `fpenv` is exported by module `a`, and imported
 by module `b`, so instructions `(1)` and `(2)` will consistently return the
 same results when given the same inputs.
 
-Relaxed SIMD instructions are deterministic "up-to" `fpenv`. Given the
-identical inputs, two calls to the same instruction will return the same result
-provided that the `fpenv` is the same, where the identity of `fpenv` is opaque
-and must be passed via import/export.
+`fpenv` holds a value which is computed non-deterministically when the module
+is instantiated - all the non-determinism of Relaxed SIMD is encapsulated in
+`fpenv`. That makes Relaxed SIMD instructions themselves deterministic.
 
 ## References
 
