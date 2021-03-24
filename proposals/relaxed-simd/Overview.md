@@ -78,10 +78,15 @@ In the example above, both `f32x4.qfma` instructions refer to the same `fpenv`,
 and will get the same results when given the same input.
 
 A `fpenv` has a single `varuint32` attribute which is reserved for future
-extensibility and must be `0` for now. This is a opaque value that does not
-represent anything in particular. The identity of a `fpenv` is the value
-encapsulated inside of it, which is non-deterministic. This `fpenv` can be
-imported/exported between modules to require consistency.
+extensibility and must be `0` for now.  The value of an `fpenv` is
+non-deterministically computed when the module which declares it is
+instantiated.  This value determines the semantics of the instructions that
+uses it as an immediate.
+
+As such, all the non-determinism of Relaxed SIMD is encapsulated in `fpenv`,
+which makes Relaxed SIMD instructions themselves deterministic.
+
+Modules can import/export an `fpenv` to specify consistency requirements:
 
 ```wast
 ;; module a
@@ -102,10 +107,6 @@ imported/exported between modules to require consistency.
 In the above example, the same `fpenv` is exported by module `a`, and imported
 by module `b`, so instructions `(1)` and `(2)` will consistently return the
 same results when given the same inputs.
-
-`fpenv` holds a value which is computed non-deterministically when the module
-is instantiated - all the non-determinism of Relaxed SIMD is encapsulated in
-`fpenv`. That makes Relaxed SIMD instructions themselves deterministic.
 
 ## References
 
