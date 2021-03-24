@@ -67,11 +67,11 @@ section of a module.  All Relaxed SIMD instructions will take an additional
 ```wast
 (module
   (func (param v128 v128 v128)
-    (f32x4.qfma 0 (local.get 0) (local.get 1) (local.get 2)) ;; (1)
+    (f32x4.qfma $fpu (local.get 0) (local.get 1) (local.get 2)) ;; (1)
     ;; ...
-    (f32x4.qfma 0 (local.get 0) (local.get 1) (local.get 2)) ;; (2)
+    (f32x4.qfma $fpu (local.get 0) (local.get 1) (local.get 2)) ;; (2)
   )
-  (fpenv 0))
+  (fpenv $fpu 0))
 ```
 
 In the example above, both `f32x4.qfma` instructions refer to the same `fpenv`,
@@ -86,17 +86,17 @@ imported/exported between modules to require consistency.
 ```wast
 ;; module a
 (module
-  (fpenv (export "foo") 0)
+  (fpenv $fpu (export "foo") 0)
   (func (param v128 v128 v128)
-    (f32x4.qfma 0 (local.get 0) (local.get 1) (local.get 2)))) ;; (1)
+    (f32x4.qfma $fpu (local.get 0) (local.get 1) (local.get 2)))) ;; (1)
 ```
 
 ```wast
 ;; module b
 (module
-  (import "a" "foo" (fpenv))
+  (import "a" "foo" (fpenv $fpu))
   (func (param v128 v128 v128)
-    (f32x4.qfma 0 (local.get 0) (local.get 1) (local.get 2)))) ;; (2)
+    (f32x4.qfma $fpu (local.get 0) (local.get 1) (local.get 2)))) ;; (2)
 ```
 
 In the above example, the same `fpenv` is exported by module `a`, and imported
