@@ -11,7 +11,9 @@ assignees: ''
 
 2. What are the semantics of these instructions?
 
-3. How will these instructions be implemented? Give examples for at least x86-64 and ARM64.
+3. How will these instructions be implemented? Give examples for at least
+   x86-64 and ARM64. Also provide reference implementation in terms of 128-bit
+   Wasm SIMD.
 
 4. How does behavior differ across processors? What new fingerprinting surfaces will be exposed?
 
