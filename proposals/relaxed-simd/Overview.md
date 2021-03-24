@@ -99,7 +99,7 @@ Modules can import/export an `fpenv` to specify consistency requirements:
 ```wast
 ;; module b
 (module
-  (import "a" "foo" (fpenv $fpu))
+  (import "a" "foo" (fpenv $fpu 0))
   (func (param v128 v128 v128)
     (f32x4.qfma $fpu (local.get 0) (local.get 1) (local.get 2)))) ;; (2)
 ```
