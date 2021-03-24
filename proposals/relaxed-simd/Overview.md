@@ -59,10 +59,10 @@ that instruction). One can imagine splitting an application's module and
 running them on multiple runtimes, where the runtimes produce
 different results - this can be surprising to the application.
 
-Applications can specify their consistency needs using a new type `fpenv` (name
-subject to change). A `fpenv` is defined in the `fpenv` section of a module.
-All Relaxed SIMD instructions will take an additional `varuint32` immediate,
-which is an index into the `fpenv` index space:
+Applications can specify their consistency needs using a new module-level
+entity `fpenv` (name subject to change). A `fpenv` is defined in the `fpenv`
+section of a module.  All Relaxed SIMD instructions will take an additional
+`varuint32` immediate, which is an index into the `fpenv` index space:
 
 ```wast
 (module
@@ -77,11 +77,11 @@ which is an index into the `fpenv` index space:
 In the example above, both `f32x4.qfma` instructions refer to the same `fpenv`,
 and will get the same results when given the same input.
 
-A `fpenv` has a single `varuint32` attribute. This is a opaque value that does
-not represent anything in particular. The identity of a `fpenv` is the value
+A `fpenv` has a single `varuint32` attribute which is reserved for future
+extensibility and must be `0` for now. This is a opaque value that does not
+represent anything in particular. The identity of a `fpenv` is the value
 encapsulated inside of it, which is non-deterministic. This `fpenv` can be
-imported/exported between modules to require consistency. The attribute is
-reserved for future extensibility.
+imported/exported between modules to require consistency.
 
 ```wast
 ;; module a
