@@ -33,7 +33,6 @@ The Subgroup may produce several kinds of specification-related work output:
 
 - new specifications in standards bodies or working groups
   (e.g. W3C WebAssembly WG or Ecma TC39),
-
 - new specifications outside of standards bodies
   (e.g. similar to the LLVM object file format documentation in Wasm tool conventions).
 
