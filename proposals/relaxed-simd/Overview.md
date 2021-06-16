@@ -129,10 +129,10 @@ def relaxed_i8x16_swizzle(a, s):
 
 ### Float/Double to int conversions
 
-- `relaxed i32x4.trunc_sat_f32x4_s`
-- `relaxed i32x4.trunc_sat_f32x4_u`
-- `relaxed i32x4.trunc_sat_f64x2_s_zero`
-- `relaxed i32x4.trunc_sat_f64x2_u_zero`
+- `relaxed i32x4.trunc_f32x4_s` (relaxed version of `i32x4.trunc_sat_f32x4_s`)
+- `relaxed i32x4.trunc_f32x4_u` (relaxed version of `i32x4.trunc_sat_f32x4_u`)
+- `relaxed i32x4.trunc_f64x2_s_zero` (relaxed version of `i32x4.trunc_sat_f64x2_s_zero`)
+- `relaxed i32x4.trunc_f64x2_u_zero` (relaxed version of `i32x4.trunc_sat_f64x2_u_zero`)
 
 These instructions have the same behavior as the non-relaxed instructions for
 lanes that are in the range of an `i32` (signed or unsigned depending on the
@@ -140,7 +140,7 @@ instruction). For lanes that contain values which are out of bounds or NaN, the
 result is implementation-defined.
 
 ```python
-def relaxed_i32x4_trunc_sat_f32x4(a : f32x4, signed : bool) -> i32x4:
+def relaxed_i32x4_trunc_f32x4(a : f32x4, signed : bool) -> i32x4:
     result = []
     min = signed ? INT32_MIN : UINT32_MIN
     max = signed ? INT32_MAX : UINT32_MAX
@@ -151,7 +151,7 @@ def relaxed_i32x4_trunc_sat_f32x4(a : f32x4, signed : bool) -> i32x4:
       else:
         result[i] = UNDEFINED
 
-def relaxed_i32x4_trunc_sat_f64x2_zero(a : f64x2, signed : bool) -> i32x4:
+def relaxed_i32x4_trunc_f64x2_zero(a : f64x2, signed : bool) -> i32x4:
     result = [0, 0, 0, 0]
     min = signed ? INT32_MIN : UINT32_MIN
     max = signed ? INT32_MAX : UINT32_MAX
