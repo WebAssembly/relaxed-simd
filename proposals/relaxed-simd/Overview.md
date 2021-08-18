@@ -219,12 +219,14 @@ def min_or_max(a : v128, b : v128, lanes : int, is_min : bool):
   result = []
   for i in range(lanes):
     if isNaN(a[i]) or isNaN(b[i]):
-      result[i] = UNDEFINED
+      result[i] = IMPLEMENTATION_DEFINED_ONE_OF(a[i], b[i])
     elif (a[i] == -0.0 && b[i] == +0.0) or (a[i] == +0.0 && b[i] == -0.0):
-      result[i] = UNDEFINED
+      result[i] = IMPLEMENTATION_DEFINED_ONE_OF(a[i], b[i])
     else:
       result[i] = is_min ? min(a, b) : max(a, b)
 ```
+
+Where `IMPLEMENTATION_DEFINED_ONE_OF(x, y)` returns either `x` or `y`, depending on the implementation.
 
 ## Binary format
 
