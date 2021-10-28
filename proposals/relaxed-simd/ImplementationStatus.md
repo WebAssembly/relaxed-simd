@@ -3,10 +3,10 @@
 | Instruction                        | LLVM [1]       | V8 [2]             | SpiderMonkey |
 |------------------------------------|----------------|--------------------|--------------|
 | `relaxed i8x16.swizzle`            | -mrelaxed-simd | :heavy_check_mark: |              |
-| `relaxed i32x4.trunc_f32x4_s`      |                | :heavy_check_mark: |              |
-| `relaxed i32x4.trunc_f32x4_u`      |                | :heavy_check_mark: |              |
-| `relaxed i32x4.trunc_f64x2_s_zero` |                | :heavy_check_mark: |              |
-| `relaxed i32x4.trunc_f64x2_u_zero` |                | :heavy_check_mark: |              |
+| `relaxed i32x4.trunc_f32x4_s`      | -mrelaxed-simd | :heavy_check_mark: |              |
+| `relaxed i32x4.trunc_f32x4_u`      | -mrelaxed-simd | :heavy_check_mark: |              |
+| `relaxed i32x4.trunc_f64x2_s_zero` | -mrelaxed-simd | :heavy_check_mark: |              |
+| `relaxed i32x4.trunc_f64x2_u_zero` | -mrelaxed-simd | :heavy_check_mark: |              |
 | `f32x4.fma`                        | -mrelaxed-simd | :heavy_check_mark: |              |
 | `f32x4.fms`                        | -mrelaxed-simd | :heavy_check_mark: |              |
 | `f64x2.fma`                        | -mrelaxed-simd | :heavy_check_mark: |              |
