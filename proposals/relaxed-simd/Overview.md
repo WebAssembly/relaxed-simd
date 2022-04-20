@@ -311,7 +311,7 @@ forward, the opcodes for relaxed-simd specification will be the ones in the
 | `f64x2.relaxed_max`                | 0x110          | 0xee             |
 | `i16x8.relaxed_q15mulr_s`          | 0x111          | unimplemented    |
 | `i16x8.dot_i8x16_i7x16_s`          | 0x112          | unimplemented    |
-| `i16x8.dot_i8x16_i7x16_u`          | 0x113          | unimplemented    |
+| `i32x4.dot_i8x16_i7x16_add_s`      | 0x113          | unimplemented    |
 | Reserved for bfloat16              | 0x114          | unimplemented    |
 | Reserved                           | 0x115 - 0x12F  |                  |
 
