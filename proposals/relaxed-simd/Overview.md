@@ -252,8 +252,6 @@ def q15mulr(a, b):
 
 - `i16x8.dot_i8x16_i7x16_s(a: v128, b: v128) -> v128`
 - `i16x8.dot_i8x16_i7x16_u(a: v128, b: v128) -> v128`
-- `i32x4.dot_i8x16_i7x16_add_s(a: v128, b:v128, c:v128) -> v128`
-- `i32x4.dot_i8x16_i7x16_add_u(a: v128, b:v128, c:v128) -> v128`
 
 Returns the multiplication of 8-bit elements (signed or unsigned) by 7-bit
 elements (unsigned) with accumulation of adjacent products. The `i32x4` versions
@@ -279,8 +277,6 @@ def dot_product(signed, elements, a, b, c):
 
 i16x8_dot_i8x16_i7x16_s(a, b)        = dot_product(signed=True, elements=2, a, b)
 i16x8_dot_i8x16_i7x16_u(a, b)        = dot_product(signed=False, elements=2, a, b)
-i32x4.dot_i8x16_i7x16_add_s(a, b, c) = dot_product(signed=True, elements=4, a, b, c)
-i32x4.dot_i8x16_i7x16_add_s(a, b, c) = dot_product(signed=False, elements=4, a, b, c)
 ```
 
 
@@ -316,10 +312,8 @@ forward, the opcodes for relaxed-simd specification will be the ones in the
 | `i16x8.relaxed_q15mulr_s`          | 0x111          | unimplemented    |
 | `i16x8.dot_i8x16_i7x16_s`          | 0x112          | unimplemented    |
 | `i16x8.dot_i8x16_i7x16_u`          | 0x113          | unimplemented    |
-| `i32x4.dot_i8x16_i7x16_add_s`      | 0x114          | unimplemented    |
-| `i32x4.dot_i8x16_i7x16_add_u`      | 0x115          | unimplemented    |
-| Reserved for bfloat16              | 0x116          | unimplemented    |
-| Reserved                           | 0x117 - 0x12F  |                  |
+| Reserved for bfloat16              | 0x114          | unimplemented    |
+| Reserved                           | 0x115 - 0x12F  |                  |
 
 ## References
 
