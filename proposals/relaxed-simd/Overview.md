@@ -251,7 +251,7 @@ def q15mulr(a, b):
 ### Relaxed integer dot product
 
 - `i16x8.dot_i8x16_i7x16_s(a: v128, b: v128) -> v128`
-- `i16x8.dot_i8x16_i7x16_u(a: v128, b: v128) -> v128`
+- `i32x4.dot_i8x16_i7x16_add_s(a: v128, b:v128, c:v128) -> v128`
 
 Returns the multiplication of 8-bit elements (signed or unsigned) by 7-bit
 elements (unsigned) with accumulation of adjacent products. The `i32x4` versions
