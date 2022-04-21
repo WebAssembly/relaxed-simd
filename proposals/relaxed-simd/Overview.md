@@ -276,7 +276,7 @@ def dot_product(signed, elements, a, b, c):
     result[i/elements] += c[i/elements] if c else 0
 
 i16x8_dot_i8x16_i7x16_s(a, b)        = dot_product(signed=True, elements=2, a, b)
-i16x8_dot_i8x16_i7x16_u(a, b)        = dot_product(signed=False, elements=2, a, b)
+i32x4.dot_i8x16_i7x16_add_s(a, b, c) = dot_product(signed=False, elements=2, a, b, c)
 ```
 
 
