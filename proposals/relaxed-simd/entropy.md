@@ -13,7 +13,7 @@ This document is an attempt to collate information that is already available in 
   *Entropy exposed:* Differences between Intel/ARM/RISC-V<br>
   *Deterministic lowering:* Available<br>
   *Compat risk:* Low, as the differences exposed are for out of range indices<br>
-  [*Issue link*](https://github.com/WebAssembly/relaxed-simd/issues/21)
+  [*Issue link*](https://github.com/WebAssembly/relaxed-simd/issues/22)
 * **relaxed i32x4.trunc_{f32x4, f64x2} operations**<br>
   *Entropy exposed:* Differences between Intel/ARM/RISC-V<br>
   *Deterministic lowering:* Available<br>
