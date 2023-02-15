@@ -109,7 +109,7 @@ sig
   val mul : t -> t -> t
   val div : t -> t -> t
   val fma : t -> t -> t -> t
-  val fms : t -> t -> t -> t
+  val fnma : t -> t -> t -> t
   val min : t -> t -> t
   val max : t -> t -> t
   val pmin : t -> t -> t

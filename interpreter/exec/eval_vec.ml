@@ -128,9 +128,9 @@ struct
   let ternop (op : ternop) =
     let f = match op with
       | F32x4 RelaxedMadd -> V128.F32x4.fma
-      | F32x4 RelaxedNmadd -> V128.F32x4.fms
+      | F32x4 RelaxedNmadd -> V128.F32x4.fnma
       | F64x2 RelaxedMadd -> V128.F64x2.fma
-      | F64x2 RelaxedNmadd -> V128.F64x2.fms
+      | F64x2 RelaxedNmadd -> V128.F64x2.fnma
       | I8x16 RelaxedLaneselect -> V128.V1x128.bitselect
       | I16x8 RelaxedLaneselect -> V128.V1x128.bitselect
       | I32x4 RelaxedLaneselect -> V128.V1x128.bitselect

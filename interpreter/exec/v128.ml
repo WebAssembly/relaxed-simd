@@ -192,7 +192,7 @@ sig
   val mul : t -> t -> t
   val div : t -> t -> t
   val fma : t -> t -> t -> t
-  val fms : t -> t -> t -> t
+  val fnma : t -> t -> t -> t
   val min : t -> t -> t
   val max : t -> t -> t
   val pmin : t -> t -> t
@@ -242,7 +242,7 @@ struct
       | [], [], [] -> []
       | _ -> assert false
     in of_lanes (fma_iter (to_lanes x) (to_lanes y) (to_lanes z))
-  let fms x y z = fma x y (unop FXX.neg z)
+  let fnma x y z = fma x y (unop FXX.neg z)
   let min = binop FXX.min
   let max = binop FXX.max
   let pmin = binop (fun x y -> if FXX.lt y x then y else x)
