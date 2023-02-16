@@ -242,7 +242,7 @@ struct
       | [], [], [] -> []
       | _ -> assert false
     in of_lanes (fma_iter (to_lanes x) (to_lanes y) (to_lanes z))
-  let fnma x y z = fma x y (unop FXX.neg z)
+  let fnma x y z = fma (unop FXX.neg x) y z
   let min = binop FXX.min
   let max = binop FXX.max
   let pmin = binop (fun x y -> if FXX.lt y x then y else x)
