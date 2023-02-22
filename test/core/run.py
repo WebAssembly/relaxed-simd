@@ -108,6 +108,9 @@ class RunTests(unittest.TestCase):
     self._compareFile(wastPath, wast2Path)
 
     if jsCommand != None:
+      if 'node' in jsCommand and 'relaxed-simd' in jsPath:
+        # node does not support relaxed-simd yet.
+        return
       self._runCommand(('%s "%s"') % (jsCommand, jsPath), logPath)
 
 
