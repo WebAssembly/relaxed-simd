@@ -389,8 +389,8 @@ struct
     let ys = I8x16.to_lanes y in
     let rec dot xs ys =
       match xs, ys with
-      | x1::x2::xss, y1::y2::yss ->
-        Int32.(add (mul x1 y1) (mul x2 y2)) :: dot xss yss
+      | x1::x2::xs', y1::y2::ys' ->
+        Int32.(add (mul x1 y1) (mul x2 y2)) :: dot xs' ys'
       | [], [] -> []
       | _, _ -> assert false
     in I16x8.of_lanes (dot xs ys)
