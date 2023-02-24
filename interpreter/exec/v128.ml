@@ -236,12 +236,7 @@ struct
   let mul = binop FXX.mul
   let div = binop FXX.div
   let fma x y z =
-    let rec fma_iter xs ys zs : FXX.t list =
-      match xs, ys, zs with
-      | x::xss, y::yss, z::zss -> (FXX.fma x y z) :: (fma_iter xss yss zss)
-      | [], [], [] -> []
-      | _ -> assert false
-    in of_lanes (fma_iter (to_lanes x) (to_lanes y) (to_lanes z))
+    of_lanes (Lib.List.map3 FXX.fma (to_lanes x) (to_lanes y) (to_lanes z))
   let fnma x y z = fma (unop FXX.neg x) y z
   let min = binop FXX.min
   let max = binop FXX.max
