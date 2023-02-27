@@ -109,7 +109,7 @@ struct
     match xs, ys, zs with
     | [], [], [] -> []
     | x::xs', y::ys', z::zs' -> f x y z :: map3 f xs' ys' zs'
-    | _ -> assert false
+    | _ -> raise (Invalid_argument "Lib.List.map3")
 
   let rec concat_map f = function
     | [] -> []
