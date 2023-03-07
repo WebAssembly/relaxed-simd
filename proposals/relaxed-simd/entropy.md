@@ -10,40 +10,40 @@ This document is an attempt to collate information that is already available in 
 ## Instruction summary
 
 * **relaxed i8x16.swizzle**<br>
-  *Entropy exposed:* Differences between Intel/ARM/RISC-V<br>
+  *Entropy exposed:* Differences between x86/ARM<br>
   *Deterministic lowering:* Available<br>
   *Compat risk:* Low, as the differences exposed are for out of range indices<br>
   [*Issue link*](https://github.com/WebAssembly/relaxed-simd/issues/22)
 * **relaxed i32x4.trunc_{f32x4, f64x2} operations**<br>
-  *Entropy exposed:* Differences between Intel/ARM/RISC-V<br>
+  *Entropy exposed:* Differences between x86/ARM<br>
   *Deterministic lowering:* Available<br>
   *Compat risk:* Low, as the differing behavior is for out of range values, and NaNs<br>
   [*Issue link*](https://github.com/WebAssembly/relaxed-simd/issues/21)<br>
 * **qfma, qfmns**<br>
   *Entropy exposed:* Differences between hardware that has native FMA support, and hardware that does not.<br>
   *Deterministic lowering:* Not available, but depending on underlying hardware, the results can only be fused, or unfused.<br>
-  *Compat risk:* TBD<br>
+  *Compat risk:* Potentially divergent behavior based on hardware FMA support<br>
   *Mitigating reasons to include:* Most modern hardware do have native FMA support, performance wins are significant, operations are difficult to emulate<br>
   [*Issue link*](https://github.com/WebAssembly/simd/pull/79)<br>
 * **{i8x16, i16x8, i32x4, i64x2}.laneselect**<br>
-  *Entropy exposed:* Intel/ARM<br>
+  *Entropy exposed:* x86/ARM<br>
   *Deterministic lowering:* Available<br>
   *Compat risk:* Medium, architectures vary on which bit is used for lane selection<br>
   [*Issue link*](https://github.com/WebAssembly/relaxed-simd/issues/17)<br>
 * **{f32x4, f64x2}.{min,max}**<br>
-  *Entropy exposed:* Intel/ARM<br>
+  *Entropy exposed:* x86/ARM<br>
   *Deterministic lowering:* Available<br>
   *Compat risk:* Low, varying outputs when one of the inputs is NaN, or  +0, -0<br>
   [*Issue link*](https://github.com/WebAssembly/relaxed-simd/issues/33)<br>
 * **I16x8.relaxed_q15mulr_s**<br>
-  *Entropy exposed:* Intel/ARM<br>
+  *Entropy exposed:* x86/ARM<br>
   *Deterministic lowering:* Available<br>
   *Compat risk:* Low, different behaviors only in the overflow case<br>
   [*Issue link*](https://github.com/WebAssembly/relaxed-simd/issues/40)<br>
 * **Dot product instructions**<br>
-  *Entropy exposed:* Intel/ARM, and whether the Dot product extension is supported in the most optimal codegen<br>
+  *Entropy exposed:* x86/ARM, and whether the Dot product extension is supported in the most optimal codegen<br>
   *Deterministic lowering:* Available, but only when not using the most optimal codegen<br>
-  *Compat risk:* Medium for architectures that support the Dot product extensions as they vary in saturating/wrapping behavior of intermediate results<br>   *Mitigating reasons to include:* TBD<br>
+  *Compat risk:* Medium for architectures that support the Dot product extensions as they vary in saturating/wrapping behavior of intermediate results<br>   *Mitigating reasons to include:* [Performance](https://docs.google.com/presentation/d/1xlyO1ly2Fbo2Up5ZuV_BTSwiNpCwPygag09XQRjclSA/edit#slide=id.g1fee95a4c4f_0_0)<br>
   [*Issue link*](https://github.com/WebAssembly/relaxed-simd/issues/52)
 
 ## Usage patterns
