@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Numerics &#8212; WebAssembly 2.0 (Draft 2023-03-07)</title>
+    <title>Numerics &#8212; WebAssembly 2.0 (Draft 2023-03-15)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -1561,38 +1561,92 @@ each environment globally chooses a fixed projection for each operator.</p>
 one particular choice by the execution environment. The fixed operation
 itself can still be non-deterministic or partial.</p>
 </div>
+<section id="xref-exec-numerics-op-fma-mathrm-fma-z-1-z-2-z-3">
+<span id="op-fma"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fma}{\mathrm{fma}}(z_1, z_2, z_3)\)</span><a class="headerlink" href="#xref-exec-numerics-op-fma-mathrm-fma-z-1-z-2-z-3" title="Permalink to this heading">¶</a></h3>
+<p>The function <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fma}{\mathrm{fma}}\)</span> is the same as <em>fusedMultiplyAdd</em> defined by <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> (Section 5.4.1).
+It computes <span class="math notranslate nohighlight">\((z_1 \cdot z_2) + z_3\)</span> as if with unbounded range and precision, rounding only once for the final result.</p>
+<ul class="simple">
+<li><p>If either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> or <span class="math notranslate nohighlight">\(z_3\)</span> is a NaN, return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N{z_1, z_2, z_3}\)</span>.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a zero and the other is an infinity, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</p></li>
+<li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of equal sign, and <span class="math notranslate nohighlight">\(z_3\)</span> is a negative infinity, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</p></li>
+<li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of opposite sign, and <span class="math notranslate nohighlight">\(z_3\)</span> is a positive infinity, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity and the other is a value of the same sign, and <span class="math notranslate nohighlight">\(z_3\)</span> is a negative infinity, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity and the other is a value of the opposite sign, and <span class="math notranslate nohighlight">\(z_3\)</span> is a positive infinity, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</p></li>
+<li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of the same sign and <span class="math notranslate nohighlight">\(z_3\)</span> is a zero, then return positive zero.</p></li>
+<li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of the opposite sign and <span class="math notranslate nohighlight">\(z_3\)</span> is a positive zero, then return positive zero.</p></li>
+<li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of the opposite sign and <span class="math notranslate nohighlight">\(z_3\)</span> is a negative zero, then return negative zero.</p></li>
+<li><p>Else return the result of multiplying <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span>, adding <span class="math notranslate nohighlight">\(z_3\)</span> to the intermediate, and the final result ref:<cite>rounded &lt;aux-ieee&gt;</cite> to the nearest representable value.</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{&#64;{}llcll}
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2, z_3) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2, z_3\} \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(z_1, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_3) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1, z_3\} \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(z_1, z_2, \pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_1, z_2\} \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\pm \infty, \pm 0, z_3) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\pm \infty, \mp 0, z_3) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\pm \infty, \pm \infty, - \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\pm \infty, \mp \infty, + \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\pm q_1, \pm \infty, - \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\pm q_1, \mp \infty, + \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\pm \infty, \pm q_1, - \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\mp \infty, \pm q_1, + \infty) &amp;=&amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\} \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\pm 0, \pm 0, \mp 0) &amp;=&amp; + 0 \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\pm 0, \pm 0, \pm 0) &amp;=&amp; + 0 \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\pm 0, \mp 0, + 0) &amp;=&amp; + 0 \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(\pm 0, \mp 0, - 0) &amp;=&amp; - 0 \\
+&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(z_1, z_2, z_3) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z_1 \cdot z_2 + z_3) \\
+\end{array}\end{split}\]</div>
+</section>
 <section id="xref-exec-numerics-op-relaxed-madd-mathrm-frelaxed-madd-n-z-1-z-2-z-3">
-<span id="op-fma"></span><span id="op-relaxed-madd"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-madd}{\mathrm{frelaxed\_madd}}_N(z_1, z_2, z_3)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-madd-mathrm-frelaxed-madd-n-z-1-z-2-z-3" title="Permalink to this heading">¶</a></h3>
-<p>Relaxed multiply-add allows for fused or unfused results. The function <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fma}{\mathrm{fma}}\)</span>
-is the same as <em>fusedMultiplyAdd</em> defined by <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> (Section 5.4.1).</p>
+<span id="op-relaxed-madd"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-madd}{\mathrm{frelaxed\_madd}}_N(z_1, z_2, z_3)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-madd-mathrm-frelaxed-madd-n-z-1-z-2-z-3" title="Permalink to this heading">¶</a></h3>
+<p>Relaxed multiply-add allows for fused or unfused results.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> Return either <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(z_1, z_2), z_3)\)</span> or <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(z_1, z_2, z_3)\)</span></p></li>
+<li><p>Return <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(z_1, z_2, z_3)\)</span></p></li>
+</ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}llcll}
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-madd}{\mathrm{frelaxed\_madd}}_N(z_1, z_2, z_3) &amp;=&amp; [ \href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(z_1, z_2), z_3), \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(z_1, z_2, z_3) ] \\
 &amp; \href{../exec/numerics.html#op-relaxed-madd}{\mathrm{frelaxed\_madd}}_N(z_1, z_2, z_3) &amp;=&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(z_1, z_2, z_3) \\
-\\
-&amp; \href{../exec/numerics.html#op-fma}{\mathrm{fma}}_N(z_1, z_2, z_3) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z_1 \cdot z_2 + z_3) \\
 \end{array}\end{split}\]</div>
 </section>
 <section id="xref-exec-numerics-op-relaxed-nmadd-mathrm-frelaxed-nmadd-n-z-1-z-2-z-3">
 <span id="op-relaxed-nmadd"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-nmadd}{\mathrm{frelaxed\_nmadd}}_N(z_1, z_2, z_3)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-nmadd-mathrm-frelaxed-nmadd-n-z-1-z-2-z-3" title="Permalink to this heading">¶</a></h3>
 <p>Relaxed negative multiply-add allows for fused or unfused results.</p>
+<ul class="simple">
+<li><p>Return <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-madd}{\mathrm{frelaxed\_madd}}(-z_1, z_2, z_3)\)</span>.</p></li>
+</ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}llcll}
 &amp; \href{../exec/numerics.html#op-relaxed-nmadd}{\mathrm{frelaxed\_nmadd}}_N(z_1, z_2, z_3) &amp;=&amp; \href{../exec/numerics.html#op-relaxed-madd}{\mathrm{frelaxed\_madd}}_N(-z_1, z_2, z_3) \\
 \end{array}\end{split}\]</div>
 </section>
-<section id="xref-exec-numerics-op-relaxed-swizzle-mathrm-relaxed-swizzle-a-n-s-n">
-<span id="op-relaxed-swizzle"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-swizzle}{\mathrm{relaxed\_swizzle}}(a^n, s^n)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-swizzle-mathrm-relaxed-swizzle-a-n-s-n" title="Permalink to this heading">¶</a></h3>
-<p>Relaxed swizzle lane is deterministic
-if the signed interpretation of the index is less than 16 (including negative values).
-<span class="math notranslate nohighlight">\(j\)</span> is a 8-bit int.</p>
+<section id="xref-exec-numerics-op-relaxed-swizzle-lane-mathrm-relaxed-swizzle-lane-i-n-j">
+<span id="op-relaxed-swizzle-lane"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-swizzle-lane}{\mathrm{relaxed\_swizzle\_lane}}(i^n, j)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-swizzle-lane-mathrm-relaxed-swizzle-lane-i-n-j" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Let <span class="math notranslate nohighlight">\(k\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math notranslate nohighlight">\(j\)</span>.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(j\)</span> is less than <span class="math notranslate nohighlight">\(16\)</span>, return <span class="math notranslate nohighlight">\(i[j]\)</span>.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(k\)</span> is less than <span class="math notranslate nohighlight">\(0\)</span>, return <span class="math notranslate nohighlight">\(0\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> Otherwise, return either <span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(i[j \mathbin{\mathrm{mod}} n]\)</span>.</p></li>
+<li><p>Otherwise, return <span class="math notranslate nohighlight">\(0\)</span>.</p></li>
+</ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}llcll}
 &amp; \href{../exec/numerics.html#op-relaxed-swizzle-lane}{\mathrm{relaxed\_swizzle\_lane}}(i^n, j) &amp;=&amp; i[j] &amp; (\mathrel{\mbox{if}} j &lt; 16) \\
 &amp; \href{../exec/numerics.html#op-relaxed-swizzle-lane}{\mathrm{relaxed\_swizzle\_lane}}(i^n, j) &amp;=&amp; 0 &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_8(j) &lt; 0) \\
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-swizzle-lane}{\mathrm{relaxed\_swizzle\_lane}}(i^n, j) &amp;=&amp; [ 0, i[j \mathbin{\mathrm{mod}} n] ] &amp; (\mathrel{\mbox{otherwise}}) \\
 &amp; \href{../exec/numerics.html#op-relaxed-swizzle-lane}{\mathrm{relaxed\_swizzle\_lane}}(i^n, j) &amp;=&amp; 0 &amp; (\mathrel{\mbox{otherwise}}) \\
-\\
+\end{array}\end{split}\]</div>
+</section>
+<section id="xref-exec-numerics-op-relaxed-swizzle-mathrm-relaxed-swizzle-a-n-s-n">
+<span id="op-relaxed-swizzle"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-swizzle}{\mathrm{relaxed\_swizzle}}(a^n, s^n)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-swizzle-mathrm-relaxed-swizzle-a-n-s-n" title="Permalink to this heading">¶</a></h3>
+<p>Relaxed swizzle lane is deterministic if the signed interpretation of the index is less than 16 (including negative values).
+<span class="math notranslate nohighlight">\(j\)</span> is a 8-bit int.</p>
+<ul class="simple">
+<li><p>Return <span class="math notranslate nohighlight">\(\mathit{rsl}_0 \dots \mathit{rsl}_{n-1}\)</span> where <span class="math notranslate nohighlight">\(\mathit{rsl}_i = \href{../exec/numerics.html#op-relaxed-swizzle-lane}{\mathrm{relaxed\_swizzle\_lane}}(a^n, s^n[i])\)</span></p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{&#64;{}llcll}
 &amp; \href{../exec/numerics.html#op-relaxed-swizzle}{\mathrm{relaxed\_swizzle}}(a^n, s^n) &amp;=&amp; \mathit{rsl}_0 \dots \mathit{rsl}_{n-1} \\
 &amp; \qquad \mathrel{\mbox{where}} \mathit{rsl}_i &amp;=&amp; \href{../exec/numerics.html#op-relaxed-swizzle-lane}{\mathrm{relaxed\_swizzle\_lane}}(a^n, s^n[i])
 \end{array}\end{split}\]</div>
@@ -1601,31 +1655,47 @@ if the signed interpretation of the index is less than 16 (including negative va
 <span id="op-relaxed-trunc-u"></span><span id="op-relaxed-trunc"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-trunc}{\mathrm{relaxed\_trunc}}^u_{M,N}(z)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-trunc-mathrm-relaxed-trunc-u-m-n-z" title="Permalink to this heading">¶</a></h3>
 <p>Relaxed unsigned truncation converts floating point numbers to integers.
 The result for NaN’s and out-of-range values is host-dependent.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> If <span class="math notranslate nohighlight">\(z\)</span> is a NaN, return either <span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(2^N-1\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> Else if <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(z)\)</span> is positive and less than <span class="math notranslate nohighlight">\(2^N\)</span>, return <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-trunc-u}{\mathrm{trunc}^{\mathsf{u}}}_{M,N}(z)\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> Else return either <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-trunc-sat-u}{\mathrm{trunc\_sat\_u}}_{M,N}(z)\)</span> or <span class="math notranslate nohighlight">\(2^N-1\)</span>.</p></li>
+<li><p>Return <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-trunc-sat-u}{\mathrm{trunc\_sat\_u}}_{M,N}(z)\)</span>.</p></li>
+</ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}llcll}
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-trunc}{\mathrm{relaxed\_trunc}}^u_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; [ 0, 2^{N}-1 ] \\
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-trunc}{\mathrm{relaxed\_trunc}}^u_{M,N}(\pm q) &amp;=&amp; \href{../exec/numerics.html#op-trunc-u}{\mathrm{trunc}^{\mathsf{u}}}_{M,N}(\pm q) &amp; (\mathrel{\mbox{if}} -1 &lt; \href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &lt; 2^N) \\
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-trunc}{\mathrm{relaxed\_trunc}}^u_{M,N}(\pm p) &amp;=&amp; [ \href{../exec/numerics.html#op-trunc-sat-u}{\mathrm{trunc\_sat\_u}}_{M,N}(\pm p), 2^{N}-1 ] &amp; (\mathrel{\mbox{otherwise}}) \\
-&amp; \href{../exec/numerics.html#op-relaxed-trunc}{\mathrm{relaxed\_trunc}}^u_{M,N}(\pm p) &amp;=&amp; \href{../exec/numerics.html#op-trunc-sat-u}{\mathrm{trunc\_sat\_u}}_{M,N}(\pm p) &amp; (\mathrel{\mbox{otherwise}}) \\
+&amp; \href{../exec/numerics.html#op-relaxed-trunc}{\mathrm{relaxed\_trunc}}^u_{M,N}(z) &amp;=&amp; \href{../exec/numerics.html#op-trunc-sat-u}{\mathrm{trunc\_sat\_u}}_{M,N}(z) &amp; \\
 \end{array}\end{split}\]</div>
 </section>
 <section id="xref-exec-numerics-op-relaxed-trunc-mathrm-relaxed-trunc-s-m-n-z">
 <span id="op-relaxed-trunc-s"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-trunc}{\mathrm{relaxed\_trunc}}^s_{M,N}(z)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-trunc-mathrm-relaxed-trunc-s-m-n-z" title="Permalink to this heading">¶</a></h3>
 <p>Relaxed signed truncation converts floating point numbers to integers.
 The result for NaN’s and out-of-range values is host-dependent.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> If <span class="math notranslate nohighlight">\(z\)</span> is a NaN, return either <span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(-2^{N-1}\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> Else if <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(z)\)</span> is larger than <span class="math notranslate nohighlight">\(-2^{N-1}-1\)</span> and less than <span class="math notranslate nohighlight">\(2^{N-1}\)</span>, return <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-trunc-s}{\mathrm{trunc}^{\mathsf{s}}}_{M,N}(z)\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> Else return either <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-trunc-sat-s}{\mathrm{trunc\_sat\_s}}_{M,N}(z)\)</span> or <span class="math notranslate nohighlight">\(-2^{N-1}\)</span>.</p></li>
+<li><p>Return <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-trunc-sat-s}{\mathrm{trunc\_sat\_s}}_{M,N}(z)\)</span>.</p></li>
+</ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}llcll}
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-trunc}{\mathrm{relaxed\_trunc}}^s_{M,N}(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)) &amp;=&amp; [ 0, -2^{N-1} ] \\
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-trunc}{\mathrm{relaxed\_trunc}}^s_{M,N}(\pm q) &amp;=&amp; \href{../exec/numerics.html#op-trunc-s}{\mathrm{trunc}^{\mathsf{s}}}_{M,N}(\pm q) &amp; (\mathrel{\mbox{if}} -2^{N-1} - 1 &lt; \href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &lt; 2^{N-1}) \\
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-trunc}{\mathrm{relaxed\_trunc}}^s_{M,N}(\pm p) &amp;=&amp; [ \href{../exec/numerics.html#op-trunc-sat-s}{\mathrm{trunc\_sat\_s}}_{M,N}(\pm p), -2^{N-1} ] &amp; (\mathrel{\mbox{otherwise}}) \\
-&amp; \href{../exec/numerics.html#op-relaxed-trunc}{\mathrm{relaxed\_trunc}}^s_{M,N}(\pm p) &amp;=&amp; \href{../exec/numerics.html#op-trunc-sat-s}{\mathrm{trunc\_sat\_s}}_{M,N}(\pm p) &amp; (\mathrel{\mbox{otherwise}}) \\
+&amp; \href{../exec/numerics.html#op-relaxed-trunc}{\mathrm{relaxed\_trunc}}^s_{M,N}(z) &amp;=&amp; \href{../exec/numerics.html#op-trunc-sat-s}{\mathrm{trunc\_sat\_s}}_{M,N}(z) &amp; \\
 \end{array}\end{split}\]</div>
 </section>
-<section id="xref-exec-numerics-op-relaxed-lane-select-mathrm-relaxed-laneselect-b-a-n-b-n-c-n">
-<span id="op-relaxed-lane"></span><span id="op-relaxed-lane-select"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-lane-select}{\mathrm{relaxed\_laneselect}}_B(a^n, b^n, c^n)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-lane-select-mathrm-relaxed-laneselect-b-a-n-b-n-c-n" title="Permalink to this heading">¶</a></h3>
-<p>Relaxed lane selection is deterministic when all bits are set or unset in the
-mask. Otherwise depending on the host, either only the top bit is examined, or
-all bits are examined (i.e. it becomes a bit select).</p>
+<section id="xref-exec-numerics-op-relaxed-lane-mathrm-relaxed-lane-n-i-1-i-2-i-3">
+<span id="op-relaxed-lane"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-lane}{\mathrm{relaxed\_lane}}_N(i_1, i_2, i_3)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-lane-mathrm-relaxed-lane-n-i-1-i-2-i-3" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>If <span class="math notranslate nohighlight">\(i_3\)</span> is <span class="math notranslate nohighlight">\(2^N - 1\)</span>, return <span class="math notranslate nohighlight">\(i_1\)</span>.</p></li>
+<li><p>Else if <span class="math notranslate nohighlight">\(i_3\)</span> is <span class="math notranslate nohighlight">\(0\)</span>, return <span class="math notranslate nohighlight">\(i_2\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> Else if <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_n(i_3)\)</span> is less than <span class="math notranslate nohighlight">\(0\)</span>, return either <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-ibitselect}{\mathrm{ibitselect}}_n(i_1, i_2, i_3)\)</span> or <span class="math notranslate nohighlight">\(i_1\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> Otherwise return either <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-ibitselect}{\mathrm{ibitselect}}_n(i_1, i_2, i_3)\)</span> or <span class="math notranslate nohighlight">\(i_2\)</span>.</p></li>
+<li><p>Otherwise return <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-ibitselect}{\mathrm{ibitselect}}_n(i_1, i_2, i_3)\)</span>.</p></li>
+</ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}llcll}
 &amp; \href{../exec/numerics.html#op-relaxed-lane}{\mathrm{relaxed\_lane}}_N(i_1, i_2, 2^N-1) &amp;=&amp; i_1 \\
@@ -1633,7 +1703,18 @@ all bits are examined (i.e. it becomes a bit select).</p>
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-lane}{\mathrm{relaxed\_lane}}_N(i_1, i_2, i_3) &amp;=&amp; [ \href{../exec/numerics.html#op-ibitselect}{\mathrm{ibitselect}}_N(i_1, i_2, i_3), i_1 ] &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_N(i_3) &lt; 0) \\
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-lane}{\mathrm{relaxed\_lane}}_N(i_1, i_2, i_3) &amp;=&amp; [ \href{../exec/numerics.html#op-ibitselect}{\mathrm{ibitselect}}_N(i_1, i_2, i_3), i_2 ] &amp; (\mathrel{\mbox{otherwise}}) \\
 &amp; \href{../exec/numerics.html#op-relaxed-lane}{\mathrm{relaxed\_lane}}_N(i_1, i_2, i_3) &amp;=&amp; \href{../exec/numerics.html#op-ibitselect}{\mathrm{ibitselect}}_N(i_1, i_2, i_3) &amp; (\mathrel{\mbox{otherwise}}) \\
-\\
+\end{array}\end{split}\]</div>
+</section>
+<section id="xref-exec-numerics-op-relaxed-lane-select-mathrm-relaxed-laneselect-b-a-n-b-n-c-n">
+<span id="op-relaxed-lane-select"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-lane-select}{\mathrm{relaxed\_laneselect}}_B(a^n, b^n, c^n)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-lane-select-mathrm-relaxed-laneselect-b-a-n-b-n-c-n" title="Permalink to this heading">¶</a></h3>
+<p>Relaxed lane selection is deterministic when all bits are set or unset in the
+mask. Otherwise depending on the host, either only the top bit is examined, or
+all bits are examined (i.e. it becomes a bit select).</p>
+<ul class="simple">
+<li><p>Return <span class="math notranslate nohighlight">\(rll_0 \dots rll_{n-1}\)</span> where <span class="math notranslate nohighlight">\(rll_i = \href{../exec/numerics.html#op-relaxed-lane}{\mathrm{relaxed\_lane}}_B(a^n[i], b^n[i], c^n[i])\)</span>.</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{&#64;{}llcll}
 &amp; \href{../exec/numerics.html#op-relaxed-lane-select}{\mathrm{relaxed\_laneselect}}_B(a^n, b^n, c^n) &amp;=&amp; rll_0 \dots rll_{n-1} \\
 &amp; \qquad \mathrel{\mbox{where}} rll_i &amp;=&amp; \href{../exec/numerics.html#op-relaxed-lane}{\mathrm{relaxed\_lane}}_B(a^n[i], b^n[i], c^n[i]) \\
 \end{array}\end{split}\]</div>
@@ -1642,6 +1723,12 @@ all bits are examined (i.e. it becomes a bit select).</p>
 <span id="op-relaxed-min"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-min}{\mathrm{frelaxed\_min}}_N(z_1, z_2)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-min-mathrm-frelaxed-min-n-z-1-z-2" title="Permalink to this heading">¶</a></h3>
 <p>Relaxed minimum differs from regular minimum when inputs are NaN’s or zeroes with different signs.
 It allows for implementation to return the first or second input when either input is a NaN.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> If <span class="math notranslate nohighlight">\(z_1\)</span> is a NaN, return either an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\)</span>, or <span class="math notranslate nohighlight">\(z_2\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> If <span class="math notranslate nohighlight">\(z_2\)</span> is a NaN, return either an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\)</span>, or <span class="math notranslate nohighlight">\(z_1\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> If both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of opposite sign, return either <span class="math notranslate nohighlight">\(+ 0\)</span> or <span class="math notranslate nohighlight">\(- 0\)</span>.</p></li>
+<li><p>Return <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, z_2)\)</span>.</p></li>
+</ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}llcll}
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-min}{\mathrm{frelaxed\_min}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; [ \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\}, \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2, z_2 ] \\
@@ -1654,6 +1741,12 @@ It allows for implementation to return the first or second input when either inp
 <span id="op-relaxed-max"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-max}{\mathrm{frelaxed\_max}}_N(z_1, z_2)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-max-mathrm-frelaxed-max-n-z-1-z-2" title="Permalink to this heading">¶</a></h3>
 <p>Relaxed maximum differs from regular maximum when inputs are NaN’s or zeroes with different signs.
 It allows for implementations to return the first or second input when either input is a NaN.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> If <span class="math notranslate nohighlight">\(z_1\)</span> is a NaN, return either an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\)</span>, or <span class="math notranslate nohighlight">\(z_2\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> If <span class="math notranslate nohighlight">\(z_2\)</span> is a NaN, return either an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n)\)</span>, or <span class="math notranslate nohighlight">\(z_1\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> If both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of opposite sign, return either <span class="math notranslate nohighlight">\(+ 0\)</span> or <span class="math notranslate nohighlight">\(- 0\)</span>.</p></li>
+<li><p>Return <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, z_2)\)</span>.</p></li>
+</ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}llcll}
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-max}{\mathrm{frelaxed\_max}}_N(\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2) &amp;=&amp; [ \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2\}, \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), z_2, z_2 ] \\
@@ -1666,15 +1759,23 @@ It allows for implementations to return the first or second input when either in
 <span id="op-relaxed-q15mulr-s"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-q15mulr-s}{\mathrm{irelaxed\_q15mulr\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-q15mulr-s-mathrm-irelaxed-q15mulr-s-n-i-1-i-2" title="Permalink to this heading">¶</a></h3>
 <p>Relaxed Q15 multiply differs from regular Q15 multiply when the multiplication results overflows (i.e. when both inputs are -32768).
 It allows for implementations to either wrap around or saturate.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> If both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are <span class="math notranslate nohighlight">\(-2^{N-1}\)</span>, return either <span class="math notranslate nohighlight">\(2^{N-1} - 1\)</span> or <span class="math notranslate nohighlight">\(-2^{N-1}\)</span>.</p></li>
+<li><p>Return <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-iq15mulrsat-s}{\mathrm{iq15mulrsat\_s}}(i_1, i_2)\)</span></p></li>
+</ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}llcll}
-\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-q15mulr-s}{\mathrm{irelaxed\_q15mulr\_s}}_N(i_1, i_2) &amp;=&amp; [ \href{../exec/numerics.html#aux-sat-s}{\mathrm{sat}^{\mathsf{s}}}_N(i), i \mathbin{\mathrm{mod}} 2^N ] &amp; (\mathrel{\mbox{if}} i = \href{../exec/numerics.html#op-ishr-s}{\mathrm{ishr\_s}}_N(i_1 \cdot i_2 + 2^{14}, 15)) \\
+\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-q15mulr-s}{\mathrm{irelaxed\_q15mulr\_s}}_N(-2^{N-1}, -2^{N-1}) &amp;=&amp; [ 2^{N-1}-1, -2^{N-1}] &amp; \\
 &amp; \href{../exec/numerics.html#op-relaxed-q15mulr-s}{\mathrm{irelaxed\_q15mulr\_s}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#op-iq15mulrsat-s}{\mathrm{iq15mulrsat\_s}}(i_1, i_2)
 \end{array}\end{split}\]</div>
 </section>
 <section id="xref-exec-numerics-op-relaxed-dot-mul-mathrm-relaxed-dot-mul-m-n-i-1-i-2">
 <span id="op-relaxed-dot-mul"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-relaxed-dot-mul}{\mathrm{relaxed\_dot\_mul}}_{M,N}(i_1, i_2)\)</span><a class="headerlink" href="#xref-exec-numerics-op-relaxed-dot-mul-mathrm-relaxed-dot-mul-m-n-i-1-i-2" title="Permalink to this heading">¶</a></h3>
 <p>Relaxed integer dot product differs from regular integer dot product when the elements of the input have their most significant bit set.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span> Return either <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-imul}{\mathrm{imul}}_N(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_M(i_1), i_2), \href{../exec/numerics.html#op-imul}{\mathrm{imul}}_N(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_M(i_1), \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_M(i_2))\)</span>.</p></li>
+<li><p>Return <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-imul}{\mathrm{imul}}_N(\href{../exec/numerics.html#op-extend-s}{\mathrm{extend}^{\mathsf{s}}}_{M,N}(i_1), \href{../exec/numerics.html#op-extend-s}{\mathrm{extend}^{\mathsf{s}}}_{M,N}(i_2))\)</span>.</p></li>
+</ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}llcll}
 \def\mathdef2357#1{{^{\small{[!#1]}}}}\mathdef2357{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#op-relaxed-dot-mul}{\mathrm{relaxed\_dot\_mul}}_{M,N}(i_1, i_2) &amp;=&amp; [ \href{../exec/numerics.html#op-imul}{\mathrm{imul}}_N(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_M(i_1), i_2), \href{../exec/numerics.html#op-imul}{\mathrm{imul}}_N(\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_M(i_1), \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_M(i_2)) ] \\
