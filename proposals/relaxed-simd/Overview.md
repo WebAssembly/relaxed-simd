@@ -114,7 +114,7 @@ def relaxed_i32x4_trunc_f32x4_s(a : f32x4) -> i32x4:
     result = [0, 0, 0, 0]
     for i in range(4):
       if isnan(a[i]):
-        result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, INT32_MIN)
+        result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, INT32_MAX)
         continue
       r = truncate(a[i])
       if r < INT32_MIN:
@@ -142,7 +142,7 @@ def relaxed_i32x4_trunc_f64x2_zero_s(a : f64x2) -> i32x4:
     result = [0, 0, 0, 0]
     for i in range(2):
       if isnan(a[i]):
-        result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, INT32_MIN)
+        result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, INT32_MAX)
         continue
       r = truncate(a[i])
       if r < INT32_MIN:
